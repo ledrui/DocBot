@@ -1,5 +1,5 @@
 from langchain.chat_models import ChatAnthropic
-from langchain import PromptTemplate, LLMChain
+from langchain import PromptTemplate, LLMChain, HuggingFaceHub 
 from langchain.prompts.chat import (
     ChatPromptTemplate,
     SystemMessagePromptTemplate,
@@ -10,6 +10,7 @@ from langchain.schema import AIMessage, HumanMessage, SystemMessage
 import streamlit as st
 from dotenv import load_dotenv
 import PyPDF2
+import os
 
 load_dotenv()
 
@@ -25,10 +26,13 @@ class LegalExpert:
         )
 
         # create llm from huggingfaceHub model
+        if not os.getenv("HUGGINGFACE_API_KEY"):
+            raise ValueError("HUGGINGFACE_API_KEY not set")
+        self.llm = HuggingFaceHub(repo_id="google/flan-t5-xl", 
+                                        model_kwargs={"temperature":0.3, 
+                                                      "max_length":64})
 
-        self.chat = ChatAnthropic()
-
-        self.chain = LLMChain(llm=self.chat, prompt=full_prompt_template)
+        self.chain = LLMChain(llm=self.llm, prompt=full_prompt_template)
 
     def get_system_prompt(self):
         system_prompt = """
@@ -97,7 +101,7 @@ if "context" in st.session_state:
         legal_response = st.session_state.LegalExpert.run_chain(
             language=language, context=st.session_state.context, question=question
         )
-
+        print(f"legal_response: {legal_response}")
         if "legal_response" not in st.session_state:
             st.session_state.legal_response = legal_response
 
