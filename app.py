@@ -18,11 +18,13 @@ class LegalExpert:
     def __init__(self):
         self.system_prompt = self.get_system_prompt()
 
-        self.user_prompt = HumanMessagePromptTemplate.from_template("{legal_question}")
+        self.user_prompt = HumanMessagePromptTemplate.from_template("{question}")
 
         full_prompt_template = ChatPromptTemplate.from_messages(
             [self.system_prompt, self.user_prompt]
         )
+
+        # create llm from huggingfaceHub model
 
         self.chat = ChatAnthropic()
 
@@ -50,7 +52,7 @@ class LegalExpert:
 
     def run_chain(self, language, context, question):
         return self.chain.run(
-            language=language, context=context, legal_question=question
+            language=language, context=context, question=question
         )
 
 
@@ -63,7 +65,7 @@ def retrieve_pdf_text(pdf_file):
 
 
 # create a streamlit app
-st.title("Canadian Legal Explainer (that does not give advice)")
+st.title("Document Explainer (that does not give advice)")
 
 if "LegalExpert" not in st.session_state:
     st.session_state.LegalExpert = LegalExpert()
