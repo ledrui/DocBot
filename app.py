@@ -10,7 +10,6 @@ from langchain.schema import AIMessage, HumanMessage, SystemMessage
 import streamlit as st
 from dotenv import load_dotenv
 import PyPDF2
-import os
 
 load_dotenv()
 
@@ -25,12 +24,12 @@ class LegalExpert:
             [self.system_prompt, self.user_prompt]
         )
 
-        # create llm from huggingfaceHub model
-        if not os.getenv("HUGGINGFACE_API_KEY"):
-            raise ValueError("HUGGINGFACE_API_KEY not set")
+        # create llm from huggingfaceHub model            
         self.llm = HuggingFaceHub(repo_id="google/flan-t5-xl", 
                                         model_kwargs={"temperature":0.3, 
                                                       "max_length":64})
+
+        # self.chat = ChatAnthropic()
 
         self.chain = LLMChain(llm=self.llm, prompt=full_prompt_template)
 
