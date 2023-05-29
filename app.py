@@ -76,6 +76,7 @@ if "LegalExpert" not in st.session_state:
 # create a upload file widget for a pdf
 pdf_file = st.file_uploader("Upload a PDF file", type=["pdf"])
 
+st.session_state.context = None
 # if a pdf file is uploaded
 if pdf_file:
     # retrieve the text from the pdf
