@@ -26,7 +26,7 @@ class LegalExpert:
         )
 
         # create llm pipeline for huggingfaceHub model
-        model_name = "flan-t5-xl"
+        model_name = "google/flan-t5-xl"
         
         self.huggingface_llm = pipeline("text-generation", model=model_name, tokenizer=AutoTokenizer.from_pretrained(model_name))
 
