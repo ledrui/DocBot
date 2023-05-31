@@ -1,4 +1,4 @@
-from langchain.chat_models import ChatAnthropic
+from langchain.chat_models import ChatAnthropic, ChatOpenAI
 from langchain import PromptTemplate, LLMChain, HuggingFaceHub 
 from langchain.prompts.chat import (
     ChatPromptTemplate,
@@ -7,6 +7,7 @@ from langchain.prompts.chat import (
     HumanMessagePromptTemplate,
 )
 from langchain.schema import AIMessage, HumanMessage, SystemMessage
+from transformers import AutoTokenizer, AutoModelForCausalLM, pipeline
 import streamlit as st
 from dotenv import load_dotenv
 import PyPDF2
@@ -24,14 +25,15 @@ class LegalExpert:
             [self.system_prompt, self.user_prompt]
         )
 
-        # create llm from huggingfaceHub model            
-        self.llm = HuggingFaceHub(repo_id="google/flan-t5-xl", 
-                                        model_kwargs={"temperature":0.3, 
-                                                      "max_length":64})
+        # create llm pipeline for huggingfaceHub model
+        model_name = "flan-t5-xl"
+        
+        self.huggingface_llm = pipeline("text-generation", model=model_name, tokenizer=AutoTokenizer.from_pretrained(model_name))
 
+        self.openai_gpt4_llm = ChatOpenAI(model_name="gpt-4", temperature=0, max_tokens=256)
         # self.chat = ChatAnthropic()
 
-        self.chain = LLMChain(llm=self.llm, prompt=full_prompt_template)
+        self.chain = LLMChain(llm=self.openai_gpt4_llm, prompt=full_prompt_template)
 
     def get_system_prompt(self):
         system_prompt = """
