@@ -9,3 +9,4 @@ tensorflow
 tensorflow_text
 torch
 einops
+accelerate

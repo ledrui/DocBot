@@ -27,7 +27,7 @@ class LegalExpert:
         )
 
         # falcon model
-        model_name = "tiiuae/falcon-40b-instruct"
+        model_name = "tiiuae/falcon-7b-instruct"
         tokenizer = AutoTokenizer.from_pretrained(model_name)
         custom_pipeline = pipeline("text-generation", 
                                    model=model_name, 
@@ -36,8 +36,7 @@ class LegalExpert:
                                    trust_remote_code=True,
                                    device_map="auto")
         
-        self.falcon = custom_pipeline(  
-                                        max_length=200,
+        self.falcon = custom_pipeline(  max_length=200,
                                         do_sample=True,
                                         top_k=10,
                                         num_return_sequences=1,
