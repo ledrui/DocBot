@@ -30,7 +30,7 @@ class LegalExpert:
         
         self.huggingface_llm = pipeline("text-generation", model=model_name, tokenizer=AutoTokenizer.from_pretrained(model_name))
 
-        self.openai_gpt4_llm = ChatOpenAI(model_name="gpt-4", temperature=0, max_tokens=256)
+        self.openai_gpt4_llm = ChatOpenAI(temperature=0, max_tokens=256)
         # self.chat = ChatAnthropic()
 
         self.chain = LLMChain(llm=self.openai_gpt4_llm, prompt=full_prompt_template)
