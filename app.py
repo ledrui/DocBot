@@ -11,6 +11,7 @@ from transformers import AutoTokenizer, AutoModelForCausalLM, pipeline
 import streamlit as st
 from dotenv import load_dotenv
 import PyPDF2
+import torch
 
 load_dotenv()
 
@@ -25,6 +26,16 @@ class LegalExpert:
             [self.system_prompt, self.user_prompt]
         )
 
+        # falcon model
+        model_name = "tiiuae/falcon-40b-instruct"
+        tokenizer = AutoTokenizer.from_pretrained(model_name)
+        custom_pipeline = pipeline("text-generation", 
+                                   model=model_name, 
+                                   tokenizer=tokenizer,
+                                   torch_dtype=torch.float16,
+                                   trust_remote_code=True,
+                                   device_map="auto")
+
         # create llm pipeline for huggingfaceHub model
         model_name = "google/flan-t5-xl"
         
@@ -33,7 +44,7 @@ class LegalExpert:
         self.openai_gpt4_llm = ChatOpenAI(temperature=0, max_tokens=256)
         # self.chat = ChatAnthropic()
 
-        self.chain = LLMChain(llm=self.openai_gpt4_llm, prompt=full_prompt_template)
+        self.chain = LLMChain(llm=self.huggingface_llm, prompt=full_prompt_template)
 
     def get_system_prompt(self):
         system_prompt = """
