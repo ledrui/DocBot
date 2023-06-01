@@ -35,8 +35,15 @@ class LegalExpert:
                                    torch_dtype=torch.float16,
                                    trust_remote_code=True,
                                    device_map="auto")
+        
+        self.falcon = custom_pipeline(  
+                                        max_length=200,
+                                        do_sample=True,
+                                        top_k=10,
+                                        num_return_sequences=1,
+                                        eos_token_id=tokenizer.eos_token_id,)
 
-        # create llm pipeline for huggingfaceHub model
+        # create llm pipeline for model
         model_name = "google/flan-t5-xl"
         
         self.huggingface_llm = pipeline("text-generation", model=model_name, tokenizer=AutoTokenizer.from_pretrained(model_name))
